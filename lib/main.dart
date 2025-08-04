@@ -1,4 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:reader_tracker/models/book.dart';
+import 'package:reader_tracker/network/network.dart';
+import 'package:reader_tracker/pages/favorites_screen.dart';
+import 'package:reader_tracker/pages/home_screen.dart';
+import 'package:reader_tracker/pages/saved_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,15 +19,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'A.Reader',
       theme: ThemeData(
-        
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
       ),
       home: const MyHomePage(),
     );
   }
 }
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -29,46 +36,57 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+    int _currentIndex = 0;
+    final List<Widget> _pages = [
+      const HomeScreen(),
+      const SavedScreen(),
+      const FavoritesScreen(),
+    ];
+ 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+  
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('A.Reader'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'Welcome to A.Reader',
-            style: TextStyle(fontSize: 24),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // Action when button is pressed
-            },
-            child: Text('Get Started'),
-          ),
-        ],
-      ),
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        items:<BottomNavigationBarItem>[
+        currentIndex: _currentIndex,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.save), label: 'Saved'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.save),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.heart),
+            icon: Icon(Icons.favorite),
             label: 'favorites',
           ),
         ],
+        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        onTap: (value) {
+          setState(() {
+            _currentIndex = value;
+          });
+          print("selected index: $_currentIndex");
+
+          // Handle navigation
+          // switch (value) {
+          //   case 0:
+          //     // Navigate to Home
+          //     break;
+          //   case 1:
+          //     // Navigate to Saved
+          //     break;
+          //   case 2:
+          //     // Navigate to Favorites
+          //     break;
+          // }
+        },
       ),
     );
   }
 }
+
+
